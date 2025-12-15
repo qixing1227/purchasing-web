@@ -26,9 +26,11 @@ const startServer = async () => {
 
         // 启动服务器
         const PORT = process.env.PORT || 5000;
-        app.listen(PORT, () => {
-            console.log(`服务器运行在端口 ${PORT} (Server running on port ${PORT})`);
-        });
+        if (process.env.NODE_ENV !== 'production') {
+            app.listen(PORT, () => {
+                console.log(`服务器运行在端口 ${PORT} (Server running on port ${PORT})`);
+            });
+        }
     } catch (error) {
         console.error('数据库连接失败 (Database connection error):', error.message);
         process.exit(1);
@@ -49,3 +51,5 @@ app.get('/', (req, res) => {
 
 // 启动应用
 startServer();
+
+module.exports = app;

@@ -31,3 +31,8 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw?
+
+# Project specific ignores
+实验报告模板.docx
+实验报告模板.pdf
+ex.html
