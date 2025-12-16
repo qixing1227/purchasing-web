@@ -20,6 +20,8 @@ const PlaceOrder = () => {
         country: '',
     });
 
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
     useEffect(() => {
         if (cartItems.length === 0) {
             navigate('/');
@@ -48,6 +50,8 @@ const PlaceOrder = () => {
     const handlePlaceOrder = async (e) => {
         e.preventDefault();
 
+        if (isSubmitting) return;
+
         // 确定最终使用的地址
         let finalAddress = {};
 
@@ -71,6 +75,8 @@ const PlaceOrder = () => {
             };
         }
 
+        setIsSubmitting(true);
+
         try {
             const orderData = {
                 orderItems: cartItems.map(item => ({
@@ -93,6 +99,7 @@ const PlaceOrder = () => {
         } catch (err) {
             console.error(err);
             toast.error(err.response?.data?.msg || '下单失败');
+            setIsSubmitting(false);
         }
     };
 
@@ -185,9 +192,10 @@ const PlaceOrder = () => {
 
                     <button
                         onClick={handlePlaceOrder}
-                        className="w-full mt-8 bg-black border border-transparent rounded-full shadow-sm py-4 px-4 text-lg font-bold text-white hover:bg-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
+                        disabled={isSubmitting}
+                        className={`w-full mt-8 border border-transparent rounded-full shadow-sm py-4 px-4 text-lg font-bold text-white transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 ${isSubmitting ? 'bg-gray-400 cursor-not-allowed' : 'bg-black hover:bg-gray-800'}`}
                     >
-                        确认支付 ¥{cartTotal}
+                        {isSubmitting ? '正在处理...' : `确认支付 ¥${cartTotal}`}
                     </button>
 
                 </div>
