@@ -20,7 +20,7 @@ const PlaceOrder = () => {
         country: '',
     });
 
-    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false); // Prevent double submit
 
     useEffect(() => {
         if (cartItems.length === 0) {
