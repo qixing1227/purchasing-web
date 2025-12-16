@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import toast from 'react-hot-toast';
+import { useAuth } from './AuthContext';
 
 const CartContext = createContext();
 
@@ -8,6 +9,7 @@ export const useCart = () => {
 };
 
 export const CartProvider = ({ children }) => {
+    const { user } = useAuth();
     const [cartItems, setCartItems] = useState(() => {
         // 从 localStorage 初始化购物车
         const savedCart = localStorage.getItem('cartItems');
@@ -21,6 +23,11 @@ export const CartProvider = ({ children }) => {
 
     // 添加商品到购物车
     const addToCart = (product) => {
+        if (!user) {
+            toast.error('请先登录或注册账号');
+            return;
+        }
+
         let isNewItem = false;
 
         setCartItems((prevItems) => {

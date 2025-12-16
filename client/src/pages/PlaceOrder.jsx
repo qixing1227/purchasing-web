@@ -98,7 +98,11 @@ const PlaceOrder = () => {
             navigate('/');
         } catch (err) {
             console.error(err);
-            toast.error(err.response?.data?.msg || '下单失败');
+            if (err.response && err.response.status === 401) {
+                toast.error('请登录账号');
+            } else {
+                toast.error(err.response?.data?.msg || '下单失败');
+            }
             setIsSubmitting(false);
         }
     };
