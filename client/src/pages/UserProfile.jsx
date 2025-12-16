@@ -10,6 +10,8 @@ const UserProfile = () => {
     const [addresses, setAddresses] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showAddressForm, setShowAddressForm] = useState(false);
+    const [isUpdatingName, setIsUpdatingName] = useState(false);
+    const [isAddingAddress, setIsAddingAddress] = useState(false);
 
     //临时新地址状态
     const [newAddress, setNewAddress] = useState({
@@ -42,6 +44,8 @@ const UserProfile = () => {
 
     const handleUpdateName = async (e) => {
         e.preventDefault();
+        if (isUpdatingName) return;
+        setIsUpdatingName(true);
         try {
             const res = await api.put('/users/profile', { name });
             // 更新全局状态
@@ -51,6 +55,8 @@ const UserProfile = () => {
             toast.success('昵称更新成功');
         } catch (err) {
             toast.error('更名失败');
+        } finally {
+            setIsUpdatingName(false);
         }
     };
 
@@ -59,7 +65,9 @@ const UserProfile = () => {
             toast.error('请填写完整地址信息');
             return;
         }
+        if (isAddingAddress) return;
 
+        setIsAddingAddress(true);
         const updatedAddresses = [...addresses, newAddress];
         try {
             const res = await api.put('/users/profile', { addresses: updatedAddresses });
@@ -69,6 +77,8 @@ const UserProfile = () => {
             toast.success('地址添加成功');
         } catch (err) {
             toast.error('添加地址失败');
+        } finally {
+            setIsAddingAddress(false);
         }
     };
 
@@ -118,9 +128,10 @@ const UserProfile = () => {
                                     />
                                     <button
                                         type="submit"
-                                        className="inline-flex items-center px-4 py-2 border border-l-0 border-gray-300 rounded-r-md bg-gray-50 text-gray-500 text-sm hover:bg-gray-100"
+                                        disabled={isUpdatingName}
+                                        className={`inline-flex items-center px-4 py-2 border border-l-0 border-gray-300 rounded-r-md text-sm ${isUpdatingName ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-gray-50 text-gray-500 hover:bg-gray-100'}`}
                                     >
-                                        保存
+                                        {isUpdatingName ? '保存中...' : '保存'}
                                     </button>
                                 </div>
                             </div>
@@ -176,9 +187,10 @@ const UserProfile = () => {
                                 <div className="mt-4 text-right">
                                     <button
                                         onClick={handleAddAddress}
-                                        className="bg-green-600 text-white px-4 py-2 rounded shadow hover:bg-green-700"
+                                        disabled={isAddingAddress}
+                                        className={`px-4 py-2 rounded shadow text-white ${isAddingAddress ? 'bg-green-400 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700'}`}
                                     >
-                                        保 存
+                                        {isAddingAddress ? '保存中...' : '保 存'}
                                     </button>
                                 </div>
                             </div>

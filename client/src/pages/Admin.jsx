@@ -18,6 +18,7 @@ const Admin = () => {
         stock: '',
         imageUrl: '',
     });
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const navigate = useNavigate();
 
@@ -89,6 +90,8 @@ const Admin = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (isSubmitting) return;
+        setIsSubmitting(true);
         try {
             await api.post('/products', formData);
             toast.success('商品添加成功');
@@ -98,6 +101,8 @@ const Admin = () => {
         } catch (err) {
             console.error(err);
             toast.error('添加失败');
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -235,7 +240,7 @@ const Admin = () => {
                                         <textarea name="description" placeholder="商品描述" value={formData.description} onChange={handleInputChange} className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 h-24" required />
                                         <div className="flex justify-end space-x-3">
                                             <button type="button" onClick={() => setShowAddForm(false)} className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">取消</button>
-                                            <button type="submit" className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">提交</button>
+                                            <button type="submit" disabled={isSubmitting} className={`px-4 py-2 rounded-md text-white ${isSubmitting ? 'bg-indigo-400 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700'}`}>{isSubmitting ? '提交中...' : '提交'}</button>
                                         </div>
                                     </form>
                                 </div>

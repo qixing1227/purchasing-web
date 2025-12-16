@@ -9,6 +9,7 @@ const Login = () => {
         email: '',
         password: '',
     });
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const { login } = useAuth();
     const navigate = useNavigate();
@@ -20,6 +21,8 @@ const Login = () => {
 
     const onSubmit = async (e) => {
         e.preventDefault();
+        if (isSubmitting) return;
+        setIsSubmitting(true);
         try {
             const res = await api.post('/auth/login', formData);
 
@@ -32,6 +35,8 @@ const Login = () => {
             console.error(err.response?.data);
             const errorMsg = err.response?.data?.msg || '登录失败';
             toast.error(errorMsg);
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -78,9 +83,10 @@ const Login = () => {
                     <div>
                         <button
                             type="submit"
-                            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out"
+                            disabled={isSubmitting}
+                            className={`group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out ${isSubmitting ? 'bg-indigo-400 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700'}`}
                         >
-                            登录 (Sign In)
+                            {isSubmitting ? '登录中...' : '登录 (Sign In)'}
                         </button>
                     </div>
                 </form>
