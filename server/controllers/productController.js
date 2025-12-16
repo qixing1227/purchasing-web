@@ -107,3 +107,33 @@ exports.deleteProduct = async (req, res) => {
         res.status(500).send('服务器错误 (Server Error)');
     }
 };
+
+// 更新商品
+exports.updateProduct = async (req, res) => {
+    const { name, description, price, stock, imageUrl } = req.body;
+
+    try {
+        let product = await Product.findById(req.params.id);
+
+        if (!product) {
+            return res.status(404).json({ msg: '商品未找到 (Product not found)' });
+        }
+
+        product.name = name || product.name;
+        product.description = description || product.description;
+        product.price = price || product.price;
+        product.stock = stock || product.stock;
+        product.imageUrl = imageUrl || product.imageUrl;
+
+        await product.save();
+
+        res.json(product);
+    } catch (err) {
+        console.error(err.message);
+        if (err.kind === 'ObjectId') {
+            return res.status(404).json({ msg: '商品未找到 (Product not found)' });
+        }
+        res.status(500).send('服务器错误 (Server Error)');
+    }
+};
+

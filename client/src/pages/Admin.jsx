@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import toast from 'react-hot-toast';
-import { Trash2, Plus, X, BarChart3, Activity, ShoppingBag, DollarSign } from 'lucide-react';
+import { Trash2, Plus, X, BarChart3, Activity, ShoppingBag, DollarSign, Edit } from 'lucide-react';
 
 const Admin = () => {
     const [activeTab, setActiveTab] = useState('dashboard'); // 'dashboard', 'products', 'logs'
@@ -18,9 +18,11 @@ const Admin = () => {
         stock: '',
         imageUrl: '',
     });
+    const [editingProduct, setEditingProduct] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const navigate = useNavigate();
+
 
     useEffect(() => {
         const user = JSON.parse(localStorage.getItem('user'));
@@ -88,19 +90,37 @@ const Admin = () => {
         setFormData({ ...formData, [name]: value });
     };
 
+    const handleEdit = (product) => {
+        setEditingProduct(product);
+        setFormData({
+            name: product.name,
+            description: product.description,
+            price: product.price,
+            stock: product.stock,
+            imageUrl: product.imageUrl,
+        });
+        setShowAddForm(true);
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (isSubmitting) return;
         setIsSubmitting(true);
         try {
-            await api.post('/products', formData);
-            toast.success('商品添加成功');
+            if (editingProduct) {
+                await api.put(`/products/${editingProduct._id}`, formData);
+                toast.success('商品更新成功');
+            } else {
+                await api.post('/products', formData);
+                toast.success('商品添加成功');
+            }
             setShowAddForm(false);
+            setEditingProduct(null);
             setFormData({ name: '', description: '', price: '', stock: '', imageUrl: '' });
             fetchProducts();
         } catch (err) {
             console.error(err);
-            toast.error('添加失败');
+            toast.error(editingProduct ? '更新失败' : '添加失败');
         } finally {
             setIsSubmitting(false);
         }
@@ -226,10 +246,10 @@ const Admin = () => {
 
                             {showAddForm && (
                                 <div className="mt-6 p-6 bg-white rounded-lg shadow-md relative">
-                                    <button onClick={() => setShowAddForm(false)} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                                    <button onClick={() => { setShowAddForm(false); setEditingProduct(null); setFormData({ name: '', description: '', price: '', stock: '', imageUrl: '' }); }} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
                                         <X className="w-6 h-6" />
                                     </button>
-                                    <h4 className="text-lg font-semibold mb-4">添加新商品</h4>
+                                    <h4 className="text-lg font-semibold mb-4">{editingProduct ? '编辑商品' : '添加新商品'}</h4>
                                     <form onSubmit={handleSubmit} className="space-y-4">
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             <input type="text" name="name" placeholder="商品名称" value={formData.name} onChange={handleInputChange} className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" required />
@@ -239,12 +259,13 @@ const Admin = () => {
                                         </div>
                                         <textarea name="description" placeholder="商品描述" value={formData.description} onChange={handleInputChange} className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 h-24" required />
                                         <div className="flex justify-end space-x-3">
-                                            <button type="button" onClick={() => setShowAddForm(false)} className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">取消</button>
+                                            <button type="button" onClick={() => { setShowAddForm(false); setEditingProduct(null); setFormData({ name: '', description: '', price: '', stock: '', imageUrl: '' }); }} className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">取消</button>
                                             <button type="submit" disabled={isSubmitting} className={`px-4 py-2 rounded-md text-white ${isSubmitting ? 'bg-indigo-400 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700'}`}>{isSubmitting ? '提交中...' : '提交'}</button>
                                         </div>
                                     </form>
                                 </div>
                             )}
+
 
                             <div className="mt-8 bg-white shadow rounded-lg overflow-hidden">
                                 <table className="min-w-full">
@@ -272,10 +293,14 @@ const Admin = () => {
                                                 </td>
                                                 <td className="px-6 py-4 text-sm text-gray-500 truncate max-w-xs">{product.description}</td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                                    <button onClick={() => handleEdit(product)} className="text-indigo-600 hover:text-indigo-900 bg-indigo-50 p-2 rounded-full hover:bg-indigo-100 mr-2">
+                                                        <Edit className="w-5 h-5" />
+                                                    </button>
                                                     <button onClick={() => handleDelete(product._id)} className="text-red-600 hover:text-red-900 bg-red-50 p-2 rounded-full hover:bg-red-100">
                                                         <Trash2 className="w-5 h-5" />
                                                     </button>
                                                 </td>
+
                                             </tr>
                                         ))}
                                     </tbody>
