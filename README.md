@@ -158,22 +158,23 @@ EMAIL_PASS=your_email_password_or_app_token       # 邮箱密码或应用授权�
 ## 🖼️ 系统截图
 
 ### 首页
-*![alt text](image.png)*
+*![alt text](assets/image.png)*
 
 ### 商品详情页
-*![alt text](image-1.png)*
+*![alt text](assets/image-1.png)*
 
 ### 购物车与下单
-*![alt text](image-2.png)*
+*![alt text](assets/image-2.png)*
 
 ### 管理员后台 - 仪表盘
-*![alt text](image-3.png)*
+*![alt text](assets/image-3.png)*
 
 ### 管理员后台 - 商品管理
-*![alt text](image-4.png)*
+*![alt text](assets/image-4.png)*
 
 ### 管理员后台 - 系统日志
-*![alt text](image-5.png)*
+*![alt text](assets/image-5.png)*
+
 
 ---
 
