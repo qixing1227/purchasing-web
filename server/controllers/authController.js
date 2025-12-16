@@ -2,8 +2,10 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const sendEmail = require('../utils/sendEmail');
+const { createLog } = require('../utils/logger');
 
 // 注册用户 (第一步：发送验证码)
+
 exports.register = async (req, res) => {
     const { name, email, password } = req.body;
 
@@ -88,8 +90,18 @@ exports.verifyEmail = async (req, res) => {
         user.verificationCodeExpires = undefined;
         await user.save();
 
+        // 记录注册日志
+        await createLog({
+            userId: user.id,
+            action: 'REGISTER',
+            details: {
+                email: user.email,
+            },
+        });
+
         // 自动登录：生成 Token
         const payload = {
+
             user: {
                 id: user.id,
             },
@@ -139,8 +151,18 @@ exports.login = async (req, res) => {
             return res.status(400).json({ msg: '密码错误 (Invalid Credentials)' });
         }
 
+        // 记录登录日志
+        await createLog({
+            userId: user.id,
+            action: 'LOGIN',
+            details: {
+                email: user.email,
+            },
+        });
+
         // 生成 JWT Token
         const payload = {
+
             user: {
                 id: user.id,
             },

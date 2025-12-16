@@ -330,8 +330,10 @@ const Admin = () => {
                                                     {new Date(log.createdAt).toLocaleString('zh-CN')}
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                    {log.user ? log.user.name : '匿名用户'}
+                                                    <div>{log.user ? log.user.name : '匿名用户'}</div>
+                                                    {log.user && <div className="text-xs text-gray-500">{log.user.email}</div>}
                                                 </td>
+
                                                 <td className="px-6 py-4 whitespace-nowrap">
                                                     <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${log.action === 'PLACE_ORDER' ? 'bg-green-100 text-green-800' :
                                                         log.action === 'VIEW_PRODUCT' ? 'bg-blue-100 text-blue-800' :

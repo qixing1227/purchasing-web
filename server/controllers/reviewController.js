@@ -1,8 +1,10 @@
 const Review = require('../models/Review');
 const Product = require('../models/Product');
+const { createLog } = require('../utils/logger');
 
 // 创建评价
 exports.createReview = async (req, res) => {
+
     const { rating, comment } = req.body;
     const productId = req.params.id;
 
@@ -31,8 +33,20 @@ exports.createReview = async (req, res) => {
             comment,
         });
 
+        // 记录评价日志
+        await createLog({
+            userId: req.user._id,
+            action: 'CREATE_REVIEW',
+            targetId: review._id,
+            details: {
+                productName: product.name,
+                rating,
+            },
+        });
+
         res.status(201).json(review);
     } catch (err) {
+
         console.error(err.message);
         res.status(500).send('服务器错误');
     }
