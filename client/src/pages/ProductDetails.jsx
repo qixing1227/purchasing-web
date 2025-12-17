@@ -164,10 +164,11 @@ const ProductDetails = () => {
                         <div className="mt-10 flex w-full">
                             <button
                                 onClick={() => addToCart(product)}
-                                className="flex-1 bg-black border border-transparent rounded-full py-4 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-colors"
+                                disabled={product.stock <= 0}
+                                className={`flex-1 border border-transparent rounded-full py-4 px-8 flex items-center justify-center text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-colors ${product.stock <= 0 ? 'bg-gray-400 cursor-not-allowed' : 'bg-black hover:bg-gray-800'}`}
                             >
                                 <ShoppingCart className="w-5 h-5 mr-2" />
-                                加入购物车
+                                {product.stock <= 0 ? '暂时缺货' : '加入购物车'}
                             </button>
                         </div>
                     </div>

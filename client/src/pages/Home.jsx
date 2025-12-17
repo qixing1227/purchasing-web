@@ -118,11 +118,13 @@ const Home = () => {
                                     />
                                     <button
                                         onClick={(e) => handleAddToCart(e, product)}
-                                        className="absolute bottom-4 right-4 bg-white text-black p-3 rounded-full shadow-lg 
+                                        disabled={product.stock <= 0}
+                                        className={`absolute bottom-4 right-4 p-3 rounded-full shadow-lg 
                                                    opacity-100 lg:opacity-0 lg:group-hover:opacity-100 
                                                    transform lg:translate-y-2 lg:group-hover:translate-y-0 
-                                                   transition-all duration-300 hover:bg-black hover:text-white"
-                                        title="加入购物车"
+                                                   transition-all duration-300 
+                                                   ${product.stock <= 0 ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-white text-black hover:bg-black hover:text-white'}`}
+                                        title={product.stock <= 0 ? "暂时缺货" : "加入购物车"}
                                     >
                                         <Plus className="w-5 h-5" />
                                     </button>

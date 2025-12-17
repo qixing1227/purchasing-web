@@ -28,6 +28,11 @@ export const CartProvider = ({ children }) => {
             return;
         }
 
+        if (product.stock <= 0) {
+            toast.error('该商品暂时缺货');
+            return;
+        }
+
         let isNewItem = false;
 
         setCartItems((prevItems) => {
