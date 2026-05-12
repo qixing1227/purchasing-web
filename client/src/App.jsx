@@ -10,6 +10,7 @@ import PlaceOrder from './pages/PlaceOrder';
 import MyOrders from './pages/MyOrders';
 import ProductDetails from './pages/ProductDetails';
 import UserProfile from './pages/UserProfile';
+import IntercomWidget from './components/IntercomWidget';
 
 import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
@@ -22,6 +23,7 @@ const App = () => {
         <CartProvider>
           <div className="min-h-screen bg-gray-50 text-gray-900 font-sans">
             <Navbar />
+            <IntercomWidget />
             <Toaster position="top-center" reverseOrder={false} />
             <main className="container mx-auto px-4 py-8">
               <Routes>
